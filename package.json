@@ -1,0 +1,18 @@
+{
+  "name": "jsformat",
+  "version": "1.0.0",
+  "description": "Formats JavaScript or TypeScript code into a single canonical form.",
+  "main": "index.js",
+  "scripts": {
+    "test": "gulp test"
+  },
+  "author": "Alex Eagle <alexeagle@google.com>",
+  "license": "Apache 2",
+  "devDependencies": {
+    "gulp": "^3.8.11"
+  },
+  "dependencies": {
+    "stream-equal": "^0.1.5",
+    "through2": "^0.6.3"
+  }
+}
