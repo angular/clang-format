@@ -1,3 +1,0 @@
-var
-	message :string =
-		("hello") ;

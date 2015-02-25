@@ -1,18 +1,19 @@
 {
-  "name": "jsformat",
+  "name": "clang-format",
   "version": "1.0.0",
-  "description": "Formats JavaScript or TypeScript code into a single canonical form.",
+  "description": "node wrapper around clang-format",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:alexeagle/clang-format.git"
+  },
   "main": "index.js",
-  "scripts": {
-    "test": "gulp test"
+  "preferGlobal": "true",
+  "bin": {
+    "clang-format": "bin/wrapper.js"
   },
   "author": "Alex Eagle <alexeagle@google.com>",
   "license": "Apache 2",
-  "devDependencies": {
-    "gulp": "^3.8.11"
-  },
   "dependencies": {
-    "stream-equal": "^0.1.5",
-    "through2": "^0.6.3"
+    "spawn-sync": "^1.0.5"
   }
 }
