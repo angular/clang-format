@@ -1,5 +1,6 @@
 var spawn = require('child_process').spawn;
 var os = require('os');
+var fs = require('fs');
 
 /**
  * Start a child process running the native clang-format binary.
@@ -9,22 +10,34 @@ var os = require('os');
  * @param done callback invoked when the child process terminates
  * @returns {Stream} the formatted code
  */
-function spawnClangFormat(file, enc, style, done) {
-  var child_process =
-      spawn('bin/' + os.platform() + "_" + os.arch() + '/clang-format',
-            ['-style=' + style, file.path], {
-              stdio: ['ignore', 'pipe', process.stderr],
-              cwd: __dirname,
-              encoding: enc
-            });
-
-  child_process.on('close', function(code) {
-    if (code) {
-      done(code);
-    }
-  });
-
-  return child_process.stdout;
+function clangFormat(file, enc, style, done) {
+  return spawnClangFormat(['-style=' + style, file.path], done, 
+                          ['ignore', 'pipe', process.stderr])
+      .stdout;
 }
 
-module.exports = spawnClangFormat;
+/**
+ * Spawn the clang-format binary with given arguments
+ */
+function spawnClangFormat(args, done, stdio) {
+  var nativeBinary = __dirname + '/bin/' + os.platform() + "_" + os.arch() + '/clang-format';
+  if (!fs.existsSync(nativeBinary)) {
+      message = "FATAL: This module doesn't bundle the clang-format executable for your platform. " +
+          "(" + os.platform() + "_" + os.arch() + ")\n" +
+          "Consider installing it with your native package manager instead.\n";
+      throw new Error(message);
+  }
+  var child_process = spawn(nativeBinary, args, {
+      stdio: stdio,
+      cwd: __dirname,
+  });
+  child_process.on('close', function(exit) {
+    if (exit) {
+      done(exit);
+    }
+  });
+  return child_process;
+}
+
+module.exports = clangFormat;
+module.exports.spawnClangFormat = spawnClangFormat;
