@@ -11,8 +11,7 @@ var fs = require('fs');
  * @returns {Stream} the formatted code
  */
 function clangFormat(file, enc, style, done) {
-  return spawnClangFormat(['-style=' + style, file.path], done, 
-                          ['ignore', 'pipe', process.stderr])
+  return spawnClangFormat(['-style=' + style, file.path], done, ['ignore', 'pipe', process.stderr])
       .stdout;
 }
 
@@ -22,14 +21,14 @@ function clangFormat(file, enc, style, done) {
 function spawnClangFormat(args, done, stdio) {
   var nativeBinary = __dirname + '/bin/' + os.platform() + "_" + os.arch() + '/clang-format';
   if (!fs.existsSync(nativeBinary)) {
-      message = "FATAL: This module doesn't bundle the clang-format executable for your platform. " +
-          "(" + os.platform() + "_" + os.arch() + ")\n" +
-          "Consider installing it with your native package manager instead.\n";
-      throw new Error(message);
+    message = "FATAL: This module doesn't bundle the clang-format executable for your platform. " +
+              "(" + os.platform() + "_" + os.arch() + ")\n" +
+              "Consider installing it with your native package manager instead.\n";
+    throw new Error(message);
   }
   var child_process = spawn(nativeBinary, args, {
-      stdio: stdio,
-      cwd: __dirname,
+    stdio: stdio,
+    cwd: __dirname,
   });
   child_process.on('close', function(exit) {
     if (exit) {
