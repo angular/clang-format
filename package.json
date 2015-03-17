@@ -10,6 +10,9 @@
   "bin": {
     "clang-format": "bin/wrapper.js"
   },
-  "author": "Alex Eagle <alexeagle@google.com>",
+  "contributors": [
+    "Alex Eagle <alexeagle@google.com>",
+    "Martin Probst <martinprobst@google.com>"
+  ],
   "license": "Apache 2"
 }
