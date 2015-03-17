@@ -4,7 +4,7 @@
   "description": "node wrapper around clang-format",
   "repository": {
     "type": "git",
-    "url": "git@github.com:alexeagle/clang-format.git"
+    "url": "git@github.com:angular/clang-format.git"
   },
   "main": "index.js",
   "bin": {
