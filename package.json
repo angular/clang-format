@@ -8,7 +8,7 @@
   },
   "main": "index.js",
   "bin": {
-    "clang-format": "bin/wrapper.js"
+    "clang-format": "main.js"
   },
   "contributors": [
     "Alex Eagle <alexeagle@google.com>",
