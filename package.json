@@ -1,6 +1,6 @@
 {
   "name": "clang-format",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "node wrapper around clang-format",
   "repository": {
     "type": "git",
@@ -8,7 +8,7 @@
   },
   "main": "index.js",
   "bin": {
-    "clang-format": "main.js"
+    "clang-format": "index.js"
   },
   "contributors": [
     "Alex Eagle <alexeagle@google.com>",
