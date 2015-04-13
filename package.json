@@ -10,6 +10,7 @@
   "bin": {
     "clang-format": "runner.js"
   },
+  "scripts": {"test": "./test.sh"},
   "contributors": [
     "Alex Eagle <alexeagle@google.com>",
     "Martin Probst <martinprobst@google.com>"
