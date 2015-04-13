@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 var spawn = require('child_process').spawn;
 var os = require('os');
 var fs = require('fs');
@@ -26,17 +27,24 @@ function spawnClangFormat(args, done, stdio) {
               "Consider installing it with your native package manager instead.\n";
     throw new Error(message);
   }
-  var child_process = spawn(nativeBinary, args, {
-    stdio: stdio,
-    cwd: __dirname,
-  });
+  var child_process = spawn(nativeBinary, args, {stdio: stdio});
   child_process.on('close', function(exit) {
-    if (exit) {
-      done(exit);
-    }
+    if (exit) done(exit);
   });
   return child_process;
 }
 
 module.exports = clangFormat;
 module.exports.spawnClangFormat = spawnClangFormat;
+
+if (require.main === module) {
+  try {
+    // This indirection is needed so that __dirname does not point to the location of the symlink'ed
+    // executable but to the js file itself, so that the binaries in /bin/ can be resolved relative
+    // to that.
+    clangFormat.spawnClangFormat(process.argv.slice(2), process.exit, 'inherit');
+  } catch (e) {
+    process.stdout.write(e.message);
+    process.exit(1);
+  }
+}
