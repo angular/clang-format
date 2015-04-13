@@ -1,6 +1,6 @@
 {
   "name": "clang-format",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "node wrapper around clang-format",
   "repository": {
     "type": "git",
@@ -8,8 +8,9 @@
   },
   "main": "index.js",
   "bin": {
-    "clang-format": "index.js"
+    "clang-format": "runner.js"
   },
+  "scripts": {"test": "./test.sh"},
   "contributors": [
     "Alex Eagle <alexeagle@google.com>",
     "Martin Probst <martinprobst@google.com>"
