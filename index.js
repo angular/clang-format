@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 var spawn = require('child_process').spawn;
 var os = require('os');
 var fs = require('fs');
@@ -41,12 +40,3 @@ function spawnClangFormat(args, done, stdio) {
 
 module.exports = clangFormat;
 module.exports.spawnClangFormat = spawnClangFormat;
-
-if (require.main === module) {
-  try {
-    spawnClangFormat(process.argv.slice(2), process.exit, 'inherit');
-  } catch (e) {
-    process.stdout.write(e.message);
-    process.exit(1);
-  }
-}
