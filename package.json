@@ -1,6 +1,6 @@
 {
   "name": "clang-format",
-  "version": "1.0.11",
+  "version": "1.0.12",
   "description": "node wrapper around clang-format",
   "repository": {
     "type": "git",
