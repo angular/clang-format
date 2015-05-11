@@ -18,3 +18,8 @@ For Linux, compile a statically linked MinSizeRel build:
     ninja clang-format
 
 For Mac OS X, static linking is not required.
+
+## Windows
+
+Windows snapshot builds to include in the release can be found at the
+[LLVM website](http://llvm.org/builds/).
