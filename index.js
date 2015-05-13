@@ -20,8 +20,12 @@ function clangFormat(file, enc, style, done) {
  * Spawn the clang-format binary with given arguments
  */
 function spawnClangFormat(args, done, stdio) {
-  var extension = os.platform()=='win32' ? '.exe' : ''
-  var nativeBinary = __dirname + '/bin/' + os.platform() + "_" + os.arch() + '/clang-format' + extension;
+  var nativeBinary;
+  if (os.platform() === 'win32') {
+    nativeBinary = __dirname + '/bin/win32/clang-format.exe';
+  } else {
+    nativeBinary = __dirname + '/bin/' + os.platform() + "_" + os.arch() + '/clang-format';
+  }
   if (!fs.existsSync(nativeBinary)) {
     message = "FATAL: This module doesn't bundle the clang-format executable for your platform. " +
               "(" + os.platform() + "_" + os.arch() + ")\n" +
