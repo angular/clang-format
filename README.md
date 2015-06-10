@@ -26,7 +26,7 @@ Windows snapshot builds to include in the release can be found at the
 
 Configure with:
 
-    cmake -G "Visual Studio 12" -DCMAKE_BUILD_TYPE=MinSizeRel -DLLVM_BUILD_STATIC=true
+    cmake -G "Visual Studio 12" -DCMAKE_BUILD_TYPE=MinSizeRel ..
 
 In the generated Visual Studio project, search for the `clang-format` binary in
 the Solution Explorer window, right click and choose Build.
