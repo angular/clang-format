@@ -8,7 +8,8 @@
   },
   "main": "index.js",
   "bin": {
-    "clang-format": "index.js"
+    "clang-format": "index.js",
+    "git-clang-format": "bin/git-clang-format"
   },
   "scripts": {
     "test": "./test.sh"

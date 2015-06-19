@@ -22,6 +22,7 @@ ninja clang-format
 popd
 
 cp ~/src/llvm/build/bin/clang-format $TARGET/darwin_x64/clang-format
+cp ~/src/llvm/tools/clang/tools/clang-format/git-clang-format $TARGET/
 echo New release copied.
 
 ssh wurstbrot.mtv.corp.google.com << EOF
