@@ -83,7 +83,7 @@ function main() {
   }
 }
 
-if (require.main === module) main();
-
 module.exports = clangFormat;
 module.exports.spawnClangFormat = spawnClangFormat;
+
+if (require.main === module) main();
