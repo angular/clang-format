@@ -28,7 +28,7 @@ function spawnClangFormat(args, done, stdio) {
     // Print our version.
     // This makes it impossible to format files called '-version' or '--version'. That's a feature.
     // minimist & Co don't support single dash args, which we need to match binary clang-format.
-    console.log('clang-format NPM version', require('./package.json').version, 'at', __filename);
+    console.log('clang-format NPM version', exports.version, 'at', exports.location);
     process.exit(0);
   }
   var nativeBinary;
@@ -60,7 +60,7 @@ function main() {
   var resolvedClangFormat;
   var clangFormatLocation;
   try {
-    clangFormatLocation = resolve('clang-format', {basedir: basedir});
+    exports.clangFormatLocation = resolve('clang-format', {basedir: basedir});
     resolvedClangFormat = require(clangFormatLocation);
   } catch (e) {
     // Ignore and use the clang-format that came with this package.
@@ -84,6 +84,8 @@ function main() {
 }
 
 module.exports = clangFormat;
+module.exports.version = require('./package.json').version;
+module.exports.location = __filename;
 module.exports.spawnClangFormat = spawnClangFormat;
 
 if (require.main === module) main();
