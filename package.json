@@ -18,5 +18,8 @@
     "Alex Eagle <alexeagle@google.com>",
     "Martin Probst <martinprobst@google.com>"
   ],
-  "license": "Apache-2.0"
+  "license": "Apache-2.0",
+  "dependencies": {
+    "resolve": "^1.1.6"
+  }
 }
