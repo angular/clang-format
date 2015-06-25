@@ -18,7 +18,7 @@ FULL_SCRIPT_PATH="$PWD/index.js"
 EXPECTED_VERSION_STRING=" at $PWD/testproject/node_modules/" # somewhere in there
 
 pushd $PWD/testproject
-npm install # Should give us a local clang-format, version doesn't really matter.
+npm install &>/dev/null # Should give us a local clang-format, version doesn't really matter.
 VERSION=`/usr/bin/env node $FULL_SCRIPT_PATH -version`
 if [[ $VERSION != *"$EXPECTED_VERSION_STRING"* ]]; then
   echo "[FAIL] Expected string containing $EXPECTED_VERSION_STRING, got $VERSION" >&2
