@@ -7,6 +7,9 @@ var path = require('path');
 var resolve = require('resolve').sync;
 var spawn = require('child_process').spawn;
 
+var VERSION = require('./package.json').version;
+var LOCATION = __filename;
+
 /**
  * Start a child process running the native clang-format binary.
  * @param file a Vinyl virtual file reference
@@ -30,7 +33,7 @@ function spawnClangFormat(args, done, stdio) {
     // Print our version.
     // This makes it impossible to format files called '-version' or '--version'. That's a feature.
     // minimist & Co don't support single dash args, which we need to match binary clang-format.
-    console.log('clang-format NPM version', exports.version, 'at', exports.location);
+    console.log('clang-format NPM version', VERSION, 'at', LOCATION);
     process.exit(0);
   }
   var nativeBinary;
@@ -62,7 +65,7 @@ function main() {
   var resolvedClangFormat;
   var clangFormatLocation;
   try {
-    exports.clangFormatLocation = resolve('clang-format', {basedir: basedir});
+    clangFormatLocation = resolve('clang-format', {basedir: basedir});
     resolvedClangFormat = require(clangFormatLocation);
   } catch (e) {
     // Ignore and use the clang-format that came with this package.
@@ -86,8 +89,8 @@ function main() {
 }
 
 module.exports = clangFormat;
-module.exports.version = require('./package.json').version;
-module.exports.location = __filename;
+module.exports.version = VERSION;
+module.exports.location = LOCATION;
 module.exports.spawnClangFormat = spawnClangFormat;
 
 if (require.main === module) main();
