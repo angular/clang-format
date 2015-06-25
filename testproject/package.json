@@ -9,6 +9,6 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "clang-format": ">=1.0.22"
+    "clang-format": "1.0.22"
   }
 }
