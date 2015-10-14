@@ -2,7 +2,7 @@
 
 TARGET=$(dirname $0)/bin
 LINUX_HOST=wurstbrot.mtv.corp.google.com
-LINUX_HOST=wuerstchen.fra.corp.google.com
+# LINUX_HOST=wuerstchen.fra.corp.google.com
 echo Building to $TARGET
 
 set -e
@@ -28,6 +28,7 @@ cp ~/src/llvm/tools/clang/tools/clang-format/git-clang-format $TARGET/
 echo New release copied.
 
 ssh $LINUX_HOST << EOF
+  echo Building on $LINUX_HOST
   set -e
   pushd ~/src/llvm/tools/clang
   echo Updating clang
