@@ -6,6 +6,8 @@ var os = require('os');
 var path = require('path');
 var resolve = require('resolve').sync;
 var spawn = require('child_process').spawn;
+var glob = require("glob");
+var async = require("async");
 
 var VERSION = require('./package.json').version;
 var LOCATION = __filename;
@@ -48,11 +50,52 @@ function spawnClangFormat(args, done, stdio) {
               "Consider installing it with your native package manager instead.\n";
     throw new Error(message);
   }
-  var clangFormatProcess = spawn(nativeBinary, args, {stdio: stdio});
-  clangFormatProcess.on('close', function(exit) {
-    if (exit) done(exit);
-  });
-  return clangFormatProcess;
+
+  // extract glob, if present
+  var filesGlob = args.filter(function(arg){return arg.indexOf('--glob=') === 0;})
+                    .map(function(arg){return arg.replace('--glob=', '');})
+                    .shift();
+
+  if (filesGlob) {
+    // remove glob from arg list
+    args = args.filter(function(arg){return arg.indexOf('--glob=') === -1;});
+
+    return glob(filesGlob, function(er, files) {
+      // split file array into chunks of 30
+      var i,j, chunks = [], chunkSize = 30;
+      for (i=0,j=files.length; i<j; i+=chunkSize) {
+          chunks.push( files.slice(i,i+chunkSize));
+      }
+
+      // launch a new process for each chunk
+      async.series(
+        chunks.map(function(chunk) {
+          return function(callback) {
+            var clangFormatProcess = spawn(nativeBinary,
+                                          args.concat(chunk),
+                                          {stdio: stdio});
+            clangFormatProcess.on('close', function(exit) {
+              if (exit !== 0) callback(exit);
+              else callback(null, exit);
+            });
+          };
+        }),
+        function(err, results) {
+          if (err) done(err);
+          console.log('\n');
+          console.log('ran clang-format on',
+                      files.length,
+                      files.length === 1 ? 'file' : 'files');
+          done(results.shift() || 0);
+        });
+    });
+  } else {
+    var clangFormatProcess = spawn(nativeBinary, args, {stdio: stdio});
+    clangFormatProcess.on('close', function(exit) {
+      if (exit) done(exit);
+    });
+    return clangFormatProcess;
+  }
 }
 
 function main() {

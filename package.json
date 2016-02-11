@@ -16,10 +16,13 @@
   },
   "contributors": [
     "Alex Eagle <alexeagle@google.com>",
-    "Martin Probst <martinprobst@google.com>"
+    "Martin Probst <martinprobst@google.com>",
+    "Filipe Silva <filipematossilva@gmail.com>"
   ],
   "license": "Apache-2.0",
   "dependencies": {
+    "async": "^1.5.2",
+    "glob": "^7.0.0",
     "resolve": "^1.1.6"
   }
 }
