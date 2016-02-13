@@ -16,6 +16,7 @@ echo "[PASS] absolute path" >&2
 
 FULL_SCRIPT_PATH="$PWD/index.js"
 EXPECTED_VERSION_STRING=" at $PWD/testproject/node_modules/" # somewhere in there
+EXPECTED_GLOB_STRING="ran clang-format with 1 file path" # somewhere in there
 
 pushd $PWD/testproject
 npm install &>/dev/null # Should give us a local clang-format, version doesn't really matter.
@@ -33,3 +34,10 @@ if [[ $VERSION != *"$EXPECTED_VERSION_STRING"* ]]; then
   exit 1
 fi
 echo "[PASS] file argument anchors resolution" >&2
+
+GLOB=`/usr/bin/env node $FULL_SCRIPT_PATH -i --glob=testproject/lib/**/*.js`
+if [[ $GLOB != *"$EXPECTED_GLOB_STRING" ]]; then
+  echo "[FAIL] Expected string ending in $EXPECTED_GLOB_STRING, got $GLOB" >&2
+  exit 1
+fi
+echo "[PASS] glob argument resolution" >&2
