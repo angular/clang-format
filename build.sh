@@ -7,24 +7,24 @@ echo Building to $TARGET
 
 set -e
 
-pushd ~/src/llvm/tools/clang
+pushd ~/lsrc/llvm/tools/clang
 echo Updating clang
 git pull
 popd
 
-pushd ~/src/llvm
+pushd ~/lsrc/llvm
 echo Updating LLVM
 git pull
 popd
 
-pushd ~/src/llvm/build
+pushd ~/lsrc/llvm/build
 echo Building...
 cmake -G Ninja -DCMAKE_BUILD_TYPE=MinSizeRel ..
 ninja clang-format
 popd
 
-cp ~/src/llvm/build/bin/clang-format $TARGET/darwin_x64/clang-format
-cp ~/src/llvm/tools/clang/tools/clang-format/git-clang-format $TARGET/
+cp ~/lsrc/llvm/build/bin/clang-format $TARGET/darwin_x64/clang-format
+cp ~/lsrc/llvm/tools/clang/tools/clang-format/git-clang-format $TARGET/
 echo New release copied.
 
 ssh $LINUX_HOST << EOF
