@@ -51,16 +51,30 @@ function spawnClangFormat(args, done, stdio) {
     throw new Error(message);
   }
 
+  // regex patters for args
+  var globArgRegex = /^--glob=/;
+  var globIgnoreArgRegex = /^--globIgnore=/;
+
   // extract glob, if present
-  var filesGlob = args.filter(function(arg){return arg.indexOf('--glob=') === 0;})
-                    .map(function(arg){return arg.replace('--glob=', '');})
+  var globArg = args.filter(function(arg){return arg.match(globArgRegex);})
+                    .map(function(arg){return arg.replace(globArgRegex, '');})
                     .shift();
 
-  if (filesGlob) {
-    // remove glob from arg list
-    args = args.filter(function(arg){return arg.indexOf('--glob=') === -1;});
+  var globIgnoreArg = args.filter(function(arg){return arg.match(globIgnoreArgRegex);})
+                    .map(function(arg){return arg.replace(globIgnoreArgRegex, '');})
+                    .shift();
 
-    return glob(filesGlob, function(er, files) {
+  if (globArg) {
+    // remove glob and globIgnore from arg list
+    args = args.filter(function(arg){
+      return !arg.match(globArgRegex) && !arg.match(globIgnoreArgRegex);
+    });
+
+    var globOptions = {};
+
+    if (globIgnoreArg) {globOptions.ignore = globIgnoreArg;}
+
+    return glob(globArg, globOptions, function(er, files) {
       // split file array into chunks of 30
       var i,j, chunks = [], chunkSize = 30;
       for (i=0,j=files.length; i<j; i+=chunkSize) {

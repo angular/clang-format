@@ -18,6 +18,10 @@ This will run `clang-format` once per file result, and show the total
 formatted files at the end.
 See [node-glob](https://github.com/isaacs/node-glob) for globbing semantics.
 
+The `ignore` option of `node-glob` is supported via the `--globIgnore` arg:
+
+    $ clang-format --glob=folder/**/*.js --globIgnore=folder/**/*.ignored.js
+
 ## Compiling clang-format
 
 For Linux, compile a statically linked MinSizeRel build:
