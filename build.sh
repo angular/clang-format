@@ -18,7 +18,8 @@ git pull
 popd
 
 pushd ~/lsrc/llvm/build
-echo Building...
+
+echo === Building based on r$(git log -n 1 | grep 'git-svn-id' | sed -e 's|.*@\([0-9]*\).*|\1|') ...
 cmake -G Ninja -DCMAKE_BUILD_TYPE=MinSizeRel ..
 ninja clang-format
 popd
@@ -41,6 +42,7 @@ ssh $LINUX_HOST << EOF
   popd
 
   pushd ~/src/llvm/build
+  echo === Building based on r\$(git log -n 1 | grep 'git-svn-id' | sed -e 's|.*@\([0-9]*\).*|\1|') ...
   cmake -G Ninja -DCMAKE_BUILD_TYPE=MinSizeRel -DLLVM_BUILD_STATIC=true ..
   \$HOME/bin/ninja clang-format
   popd
