@@ -9,12 +9,12 @@ set -e
 
 pushd ~/lsrc/llvm/tools/clang
 echo Updating clang
-git pull
+git co master && git pull
 popd
 
 pushd ~/lsrc/llvm
 echo Updating LLVM
-git pull
+git co master && git pull
 popd
 
 pushd ~/lsrc/llvm/build
@@ -33,12 +33,12 @@ ssh $LINUX_HOST << EOF
   set -e
   pushd ~/src/llvm/tools/clang
   echo Updating clang
-  git pull
+  git co master && git pull
   popd
 
   pushd ~/src/llvm
   echo Updating LLVM
-  git pull
+  git co master && git pull
   popd
 
   pushd ~/src/llvm/build
