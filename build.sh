@@ -2,7 +2,7 @@
 
 TARGET="$(dirname $0)/bin"
 LINUX_HOST=wurstbrot.mtv.corp.google.com
-# LINUX_HOST=mops.muc.corp.google.com
+LINUX_HOST=mops.muc.corp.google.com
 echo Building to $TARGET
 
 set -e
