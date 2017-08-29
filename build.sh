@@ -25,7 +25,7 @@ cmake -G Ninja -DCMAKE_BUILD_TYPE=Release ..
 ninja clang-format
 popd
 
-cp ~/lsrc/llvm/build/bin/clang-format $TARGET/darwin_x64/clang-format
+cp ~/lsrc/llvm/build.release/bin/clang-format $TARGET/darwin_x64/clang-format
 cp ~/lsrc/llvm/tools/clang/tools/clang-format/git-clang-format $TARGET/
 echo New release copied.
 
@@ -50,6 +50,6 @@ ssh $LINUX_HOST << EOF
   popd
 EOF
 
-scp $LINUX_HOST:src/llvm/build/bin/clang-format $TARGET/linux_x64/clang-format
+scp $LINUX_HOST:src/llvm/build.release/bin/clang-format $TARGET/linux_x64/clang-format
 
 echo All done.
