@@ -160,5 +160,4 @@ module.exports.version = VERSION;
 module.exports.location = LOCATION;
 module.exports.spawnClangFormat = spawnClangFormat;
 
-// if (require.main === module) main();
-spawnClangFormat(['--glob="*"'], () => {}).stdout;
+if (require.main === module) main();
