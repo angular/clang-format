@@ -89,28 +89,26 @@ function spawnClangFormat(args, done, stdio) {
 
       // launch a new process for each chunk
       async.series(
-        chunks.map(function(chunk) {
-          return function(callback) {
-            var clangFormatProcess = spawn(nativeBinary,
-                                          args.concat(chunk),
-                                          {stdio: stdio}).stdout;
-            clangFormatProcess.on('close', function(exit) {
-              if (exit !== 0) callback(errorFromExitCode(exit));
-              else callback();
-            });
-          };
-        }),
-        function(err) {
-          if (err) {
-            done(err);
-            return;
-          }
-          console.log('\n');
-          console.log('ran clang-format on',
-                      files.length,
-                      files.length === 1 ? 'file' : 'files');
-          done();
-        });
+          chunks.map(function(chunk) {
+            return function(callback) {
+              var clangFormatProcess = spawn(nativeBinary, args.concat(chunk), {stdio: stdio});
+              clangFormatProcess.on('close', function(exit) {
+                if (exit !== 0)
+                  callback(errorFromExitCode(exit));
+                else
+                  callback();
+              });
+            };
+          }),
+          function(err) {
+            if (err) {
+              done(err);
+              return;
+            }
+            console.log('\n');
+            console.log('ran clang-format on', files.length, files.length === 1 ? 'file' : 'files');
+            done();
+          });
     });
   } else {
     var clangFormatProcess = spawn(nativeBinary, args, {stdio: stdio});
