@@ -22,15 +22,18 @@ function errorFromExitCode(exitCode) {
  * @param enc the encoding to use for reading stdout
  * @param style valid argument to clang-format's '-style' flag
  * @param done callback invoked when the child process terminates
- * @returns {Stream|undefined} the formatted code, or undefined
+ * @returns {stream.Readable} the formatted code as a Readable stream
  */
 function clangFormat(file, enc, style, done) {
   var args = ['-style=' + style, file.path];
   var result = spawnClangFormat(args, done, ['ignore', 'pipe', process.stderr]);
   if (result) { // must be ChildProcess
+    result.stdout.setEncoding(enc);
     return result.stdout;
   } else {
-    return;
+    // We shouldn't be able to reach this line, because it's not possible to
+    // set the --glob arg in this function.
+    throw new Error('Can\'t get output stream when --glob flag is set');
   }
 }
 
@@ -90,7 +93,7 @@ function spawnClangFormat(args, done, stdio) {
           return function(callback) {
             var clangFormatProcess = spawn(nativeBinary,
                                           args.concat(chunk),
-                                          {stdio: stdio});
+                                          {stdio: stdio}).stdout;
             clangFormatProcess.on('close', function(exit) {
               if (exit !== 0) callback(errorFromExitCode(exit));
               else callback();
@@ -157,4 +160,5 @@ module.exports.version = VERSION;
 module.exports.location = LOCATION;
 module.exports.spawnClangFormat = spawnClangFormat;
 
-if (require.main === module) main();
+// if (require.main === module) main();
+spawnClangFormat(['--glob="*"'], () => {}).stdout;
