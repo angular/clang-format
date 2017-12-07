@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/angular/clang-format.svg?branch=master)](https://travis-ci.org/angular/clang-format)
+
 # clang-format
 node.js module which wraps the native clang-format executable.
 
