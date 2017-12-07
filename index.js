@@ -22,11 +22,16 @@ function errorFromExitCode(exitCode) {
  * @param enc the encoding to use for reading stdout
  * @param style valid argument to clang-format's '-style' flag
  * @param done callback invoked when the child process terminates
- * @returns {Stream} the formatted code
+ * @returns {Stream|undefined} the formatted code, or undefined
  */
 function clangFormat(file, enc, style, done) {
   var args = ['-style=' + style, file.path];
-  return spawnClangFormat(args, done, ['ignore', 'pipe', process.stderr]).stdout;
+  var result = spawnClangFormat(args, done, ['ignore', 'pipe', process.stderr]);
+  if (result) { // must be ChildProcess
+    return result.stdout;
+  } else {
+    return;
+  }
 }
 
 /**
@@ -40,6 +45,7 @@ function spawnClangFormat(args, done, stdio) {
     // This makes it impossible to format files called '-version' or '--version'. That's a feature.
     // minimist & Co don't support single dash args, which we need to match binary clang-format.
     console.log('clang-format NPM version', VERSION, 'at', LOCATION);
+    // To be consistent with other code paths, we use setImmediate to call `done` asynchronously.
     setImmediate(done);
     return;
   }
@@ -106,7 +112,7 @@ function spawnClangFormat(args, done, stdio) {
   } else {
     var clangFormatProcess = spawn(nativeBinary, args, {stdio: stdio});
     clangFormatProcess.on('close', function(exit) {
-      if (exit) done(new Error('clang-format exited with exit code ' + exit + '.'));
+      if (exit) done(errorFromExitCode(exit));
       else done();
     });
     return clangFormatProcess;
