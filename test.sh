@@ -18,15 +18,16 @@ FULL_SCRIPT_PATH="$PWD/index.js"
 EXPECTED_VERSION_STRING=" at $PWD/testproject/node_modules/" # somewhere in there
 EXPECTED_GLOB_STRING="ran clang-format on 1 file" # somewhere in there
 
-pushd $PWD/testproject
-npm install &>/dev/null # Should give us a local clang-format, version doesn't really matter.
-VERSION=`/usr/bin/env node $FULL_SCRIPT_PATH -version`
-if [[ $VERSION != *"$EXPECTED_VERSION_STRING"* ]]; then
-  echo "[FAIL] Expected string containing $EXPECTED_VERSION_STRING, got $VERSION" >&2
-  exit 1
-fi
-echo "[PASS] no file argument uses working directory" >&2
-popd
+(
+  cd $PWD/testproject
+  npm install &>/dev/null # Should give us a local clang-format, version doesn't really matter.
+  VERSION=`/usr/bin/env node $FULL_SCRIPT_PATH -version`
+  if [[ $VERSION != *"$EXPECTED_VERSION_STRING"* ]]; then
+    echo "[FAIL] Expected string containing $EXPECTED_VERSION_STRING, got $VERSION" >&2
+    exit 1
+  fi
+  echo "[PASS] no file argument uses working directory" >&2
+)
 
 VERSION=`/usr/bin/env node $FULL_SCRIPT_PATH -version $PWD/testproject/lib/test.js`
 if [[ $VERSION != *"$EXPECTED_VERSION_STRING"* ]]; then
