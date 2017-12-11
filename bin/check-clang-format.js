@@ -11,6 +11,7 @@
  */
 
 const spawn = require('child_process').spawnSync;
+const path = require('path');
 
 function checkGitConfig() {
   const spawn_opts = {encoding: 'utf-8', stdio: ['pipe', 'pipe', 'inherit']};
@@ -42,12 +43,14 @@ function checkGitConfig() {
       $ git config clangFormat.style file`);
     return 2;
   }
+  return 0;
 }
 
 function main(args) {
   try {
-    var clangFormatPath = require.resolve('clang-format');
+    var clangFormatPath = path.dirname(require.resolve('clang-format'));
     var configCheck = checkGitConfig();
+
     if (configCheck !== 0) return configCheck;
   } catch (e) {
     // When running the git-clang-format on ourselves, it's located in a
@@ -57,8 +60,7 @@ function main(args) {
     // in a different place
   }
 
-  const gitClangFormatPath =
-      require('path').relative(clangFormatPath, 'bin/git-clang-format');
+  const gitClangFormatPath = path.join(clangFormatPath, 'bin/git-clang-format');
   const result = spawn(gitClangFormatPath, ['--diff'], {encoding: 'utf-8'});
 
   if (result.error) {
