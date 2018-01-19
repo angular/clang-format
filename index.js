@@ -50,7 +50,7 @@ function spawnClangFormat(args, done, stdio) {
     nativeBinary = __dirname + '/bin/' + os.platform() + '_' + os.arch() + '/clang-format';
   }
   if (!fs.existsSync(nativeBinary)) {
-    message = 'This module doesn\'t bundle the clang-format executable for your platform. ' +
+    var message = 'This module doesn\'t bundle the clang-format executable for your platform. ' +
         '(' + os.platform() + '_' + os.arch() + ')\n' +
         'Consider installing it with your native package manager instead.\n';
     setImmediate(done.bind(new Error(message)));
