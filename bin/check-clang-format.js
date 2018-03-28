@@ -15,13 +15,9 @@ const path = require('path');
 
 function checkGitConfig() {
   const spawn_opts = {encoding: 'utf-8', stdio: ['pipe', 'pipe', 'inherit']};
-  const binary =
-      spawn('git', ['config', '--get', 'clangFormat.binary'], spawn_opts)
-          .stdout.trim();
-  const style =
-      spawn('git', ['config', '--get', 'clangFormat.style'], spawn_opts)
-          .stdout.trim();
-  var gitConfigWrong = false;
+  const binary = spawn('git', ['config', '--get', 'clangFormat.binary'], spawn_opts).stdout.trim();
+  const style = spawn('git', ['config', '--get', 'clangFormat.style'], spawn_opts).stdout.trim();
+  let gitConfigWrong = false;
 
   if (binary !== 'node_modules/.bin/clang-format') {
     console.error(`
@@ -47,15 +43,18 @@ function checkGitConfig() {
 }
 
 function main(args) {
+  let clangFormatPath;
+  let configCheck;
+
   try {
-    var clangFormatPath = path.dirname(require.resolve('clang-format'));
-    var configCheck = checkGitConfig();
+    clangFormatPath = path.dirname(require.resolve('clang-format'));
+    configCheck = checkGitConfig();
 
     if (configCheck !== 0) return configCheck;
   } catch (e) {
     // When running the git-clang-format on ourselves, it's located in a
     // different place
-    var clangFormatPath = '.';
+    clangFormatPath = '.';
     // And we don't run the configCheck, because the clang-format binary is also
     // in a different place
   }

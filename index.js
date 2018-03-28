@@ -1,23 +1,27 @@
 #!/usr/bin/env node
 'use strict';
 
-var fs = require('fs');
-var os = require('os');
-var path = require('path');
-var resolve = require('resolve').sync;
-var spawn = require('child_process').spawn;
-var glob = require('glob');
-var async = require('async');
+const fs = require('fs');
+const os = require('os');
+const path = require('path');
+const resolve = require('resolve').sync;
+const spawn = require('child_process').spawn;
+const glob = require('glob');
+const async = require('async');
 
-var VERSION = require('./package.json').version;
-var LOCATION = __filename;
+const VERSION = require('./package.json').version;
+const LOCATION = __filename;
+
+// Glob pattern option name
+const GLOB_OPTION = '--glob=';
 
 function errorFromExitCode(exitCode) {
-  return new Error('clang-format exited with exit code ' + exitCode + '.');
+  return new Error(`clang-format exited with exit code ${exitCode}.`);
 }
 
 /**
- * Start a child process running the native clang-format binary.
+ * Starts a child process running the native clang-format binary.
+ *
  * @param file a Vinyl virtual file reference
  * @param enc the encoding to use for reading stdout
  * @param style valid argument to clang-format's '-style' flag
@@ -25,8 +29,8 @@ function errorFromExitCode(exitCode) {
  * @returns {stream.Readable} the formatted code as a Readable stream
  */
 function clangFormat(file, enc, style, done) {
-  var args = ['-style=' + style, file.path];
-  var result = spawnClangFormat(args, done, ['ignore', 'pipe', process.stderr]);
+  let args = [`-style=${style}`, file.path];
+  let result = spawnClangFormat(args, done, ['ignore', 'pipe', process.stderr]);
   if (result) {  // must be ChildProcess
     result.stdout.setEncoding(enc);
     return result.stdout;
@@ -43,41 +47,29 @@ function clangFormat(file, enc, style, done) {
 function spawnClangFormat(args, done, stdio) {
   // WARNING: This function's interface should stay stable across versions for the cross-version
   // loading below to work.
-  var nativeBinary;
-  if (os.platform() === 'win32') {
-    nativeBinary = __dirname + '/bin/win32/clang-format.exe';
-  } else {
-    nativeBinary = __dirname + '/bin/' + os.platform() + '_' + os.arch() + '/clang-format';
-  }
-  if (!fs.existsSync(nativeBinary)) {
-    var message = 'This module doesn\'t bundle the clang-format executable for your platform. ' +
-        '(' + os.platform() + '_' + os.arch() + ')\n' +
-        'Consider installing it with your native package manager instead.\n';
-    setImmediate(done.bind(new Error(message)));
+  let nativeBinary;
+
+  try {
+    nativeBinary = getNativeBinary();
+  } catch (e) {
+    setImmediate(done.bind(e));
     return;
   }
-  if (args.indexOf('-version') !== -1 || args.indexOf('--version') !== -1) {
+
+  if (args.find(a => a === '-version' || a === '--version')) {
     // Print our version.
     // This makes it impossible to format files called '-version' or '--version'. That's a feature.
     // minimist & Co don't support single dash args, which we need to match binary clang-format.
-    console.log('clang-format NPM version', VERSION, 'at', LOCATION);
+    console.log(`clang-format NPM version ${VERSION} at ${LOCATION}`);
     args = ['--version'];
   }
 
   // extract glob, if present
-  var filesGlob = args.filter(function(arg) {
-                        return arg.indexOf('--glob=') === 0;
-                      })
-                      .map(function(arg) {
-                        return arg.replace('--glob=', '');
-                      })
-                      .shift();
+  const filesGlob = getGlobArg(args);
 
   if (filesGlob) {
     // remove glob from arg list
-    args = args.filter(function(arg) {
-      return arg.indexOf('--glob=') === -1;
-    });
+    args = args.filter(arg => arg.indexOf(GLOB_OPTION) === -1);
 
     glob(filesGlob, function(err, files) {
       if (err) {
@@ -86,7 +78,8 @@ function spawnClangFormat(args, done, stdio) {
       }
 
       // split file array into chunks of 30
-      var i, j, chunks = [], chunkSize = 30;
+      let i, j, chunks = [], chunkSize = 30;
+
       for (i = 0, j = files.length; i < j; i += chunkSize) {
         chunks.push(files.slice(i, i + chunkSize));
       }
@@ -95,7 +88,7 @@ function spawnClangFormat(args, done, stdio) {
       async.series(
           chunks.map(function(chunk) {
             return function(callback) {
-              var clangFormatProcess = spawn(nativeBinary, args.concat(chunk), {stdio: stdio});
+              const clangFormatProcess = spawn(nativeBinary, args.concat(chunk), {stdio: stdio});
               clangFormatProcess.on('close', function(exit) {
                 if (exit !== 0)
                   callback(errorFromExitCode(exit));
@@ -110,12 +103,13 @@ function spawnClangFormat(args, done, stdio) {
               return;
             }
             console.log('\n');
-            console.log('ran clang-format on', files.length, files.length === 1 ? 'file' : 'files');
+            console.log(
+                `ran clang-format on ${files.length} ${files.length === 1 ? 'file' : 'files'}`);
             done();
           });
     });
   } else {
-    var clangFormatProcess = spawn(nativeBinary, args, {stdio: stdio});
+    const clangFormatProcess = spawn(nativeBinary, args, {stdio: stdio});
     clangFormatProcess.on('close', function(exit) {
       if (exit) {
         done(errorFromExitCode(exit));
@@ -129,28 +123,27 @@ function spawnClangFormat(args, done, stdio) {
 
 function main() {
   // Find clang-format in node_modules of the project of the .js file, or cwd.
-  var nonDashArgs = process.argv.filter(function(arg, idx) {
-    return idx > 1 && arg[0] != '-';
-  });
+  const nonDashArgs = process.argv.filter((arg, idx) => idx > 1 && arg[0] != '-');
+
   // Using the last file makes it less likely to collide with clang-format's argument parsing.
-  var lastFileArg = nonDashArgs[nonDashArgs.length - 1];
-  var basedir = lastFileArg ? path.dirname(lastFileArg) :  // relative to the last .js file given.
-      process.cwd();                                       // or relative to the cwd()
-  var resolvedClangFormat;
-  var clangFormatLocation;
+  const lastFileArg = nonDashArgs[nonDashArgs.length - 1];
+  const basedir = lastFileArg ? path.dirname(lastFileArg) :  // relative to the last .js file given.
+      process.cwd();                                         // or relative to the cwd()
+  let resolvedClangFormat;
+  let clangFormatLocation;
   try {
-    clangFormatLocation = resolve('clang-format', {basedir: basedir});
+    clangFormatLocation = resolve('clang-format', {basedir});
     resolvedClangFormat = require(clangFormatLocation);
   } catch (e) {
     // Ignore and use the clang-format that came with this package.
   }
-  var actualSpawnFn;
+  let actualSpawnFn;
   if (!resolvedClangFormat) {
     actualSpawnFn = spawnClangFormat;
   } else if (resolvedClangFormat.spawnClangFormat) {
     actualSpawnFn = resolvedClangFormat.spawnClangFormat;
   } else {
-    throw new Error('Incompatible clang-format loaded from ' + clangFormatLocation);
+    throw new Error(`Incompatible clang-format loaded from ${clangFormatLocation}`);
   }
   // Run clang-format.
   try {
@@ -160,6 +153,39 @@ function main() {
     process.stdout.write(e.message);
     process.exit(1);
   }
+}
+
+/**
+ * @returns the native `clang-format` binary for the current platform
+ * @throws when the `clang-format` executable can not be found
+ */
+function getNativeBinary() {
+  let nativeBinary;
+
+  if (os.platform() === 'win32') {
+    nativeBinary = `${__dirname}/bin/win32/clang-format.exe`;
+  } else {
+    nativeBinary = `${__dirname}/bin/${os.platform()}_${os.arch()}/clang-format`;
+  }
+
+  if (!fs.existsSync(nativeBinary)) {
+    const message = 'This module doesn\'t bundle the clang-format executable for your platform. ' +
+        `(${os.platform()}_${os.arch()})\n` +
+        'Consider installing it with your native package manager instead.\n';
+    throw new Error(message);
+  }
+
+  return nativeBinary;
+}
+
+/**
+ * Filters the arguments to return the value of the `--glob=` option.
+ *
+ * @returns The value of the glob option or null if not found
+ */
+function getGlobArg(args) {
+  const found = args.find(a => a.startsWith(GLOB_OPTION));
+  return found ? found.substring(GLOB_OPTION.length) : null;
 }
 
 module.exports = clangFormat;
