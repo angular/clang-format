@@ -19,7 +19,8 @@
   "contributors": [
     "Alex Eagle <alexeagle@google.com>",
     "Martin Probst <martinprobst@google.com>",
-    "Filipe Silva <filipematossilva@gmail.com>"
+    "Filipe Silva <filipematossilva@gmail.com>",
+    "Victor Berchet <victor@suumit.com>"
   ],
   "license": "Apache-2.0",
   "dependencies": {
