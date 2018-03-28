@@ -192,5 +192,6 @@ module.exports = clangFormat;
 module.exports.version = VERSION;
 module.exports.location = LOCATION;
 module.exports.spawnClangFormat = spawnClangFormat;
+module.exports.getNativeBinary = getNativeBinary;
 
 if (require.main === module) main();
