@@ -52,7 +52,7 @@ function spawnClangFormat(args, done, stdio) {
   try {
     nativeBinary = getNativeBinary();
   } catch (e) {
-    setImmediate(done.bind(e));
+    setImmediate(() => done(e));
     return;
   }
 
@@ -148,7 +148,14 @@ function main() {
   // Run clang-format.
   try {
     // Pass all arguments to clang-format, including e.g. -version etc.
-    actualSpawnFn(process.argv.slice(2), process.exit, 'inherit');
+    actualSpawnFn(process.argv.slice(2), function(e) {
+      if (e instanceof Error) {
+        console.error(e);
+        process.exit(1);
+      } else {
+        process.exit(e);
+      }
+    }, 'inherit');
   } catch (e) {
     process.stdout.write(e.message);
     process.exit(1);
