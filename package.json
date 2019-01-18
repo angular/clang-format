@@ -13,7 +13,7 @@
     "check-clang-format": "bin/check-clang-format.js"
   },
   "scripts": {
-    "test": "./test.sh"
+    "test": "bash ./test.sh"
   },
   "contributors": [
     "Alex Eagle <alexeagle@google.com>",
