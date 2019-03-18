@@ -15,8 +15,10 @@ the latest upstream clang sources, make sure it is stripped and optimized
 ## Checking formatting
 
 Ensuring that changes to your code are properly formatted is an important part
-of your development workflow. We recommend using a git pre-commit hook. You can
-configure this as follows:
+of your development workflow. Note that the `check-clang-format` and
+`git-clang-format` commands require Python to be globally available.
+
+We recommend using a git pre-commit hook. You can configure this as follows:
 
 1. add a `precommit` script to your package.json file:
 

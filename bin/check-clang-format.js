@@ -60,7 +60,7 @@ function main(args) {
   }
 
   const gitClangFormatPath = path.join(clangFormatPath, 'bin/git-clang-format');
-  const result = spawn(gitClangFormatPath, ['--diff'], {encoding: 'utf-8'});
+  const result = spawn('python', [gitClangFormatPath, '--diff'], {encoding: 'utf-8'});
 
   if (result.error) {
     console.error('Error running git-clang-format:', result.error);
