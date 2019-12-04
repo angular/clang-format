@@ -19,7 +19,7 @@ function checkGitConfig() {
   const style = spawn('git', ['config', '--get', 'clangFormat.style'], spawn_opts).stdout.trim();
   let gitConfigWrong = false;
 
-  if (binary !== 'node_modules/.bin/clang-format') {
+  if (binary.indexOf(`node_modules${path.sep}.bin${path.sep}clang-format`) === -1) {
     console.error(`
       ERROR: Found git config --get clangFormat.binary = "${binary}"
       This can result in running a different version of clang-format than your
