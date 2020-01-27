@@ -34,7 +34,7 @@ ssh $LINUX_HOST << EOF
   mkdir -p ~/src/llvm-project/build.release
   pushd ~/src/llvm-project/build.release
   echo === Building based on r\$(git log -n 1 | grep 'git-svn-id' | sed -e 's|.*@\([0-9]*\).*|\1|') ...
-  cmake -G Ninja -DCMAKE_BUILD_TYPE=MinSizeRel -DLLVM_BUILD_STATIC=true -DLLVM_ENABLE_PROJECTS=clang ../llvm
+  cmake -G Ninja -DCMAKE_BUILD_TYPE=MinSizeRel -DLLVM_BUILD_STATIC=true -DLLVM_ENABLE_ZLIB=no -DLLVM_ENABLE_PROJECTS=clang ../llvm
   ninja clang-format
   popd
 EOF
