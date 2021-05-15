@@ -70,8 +70,13 @@ See [node-glob](https://github.com/isaacs/node-glob) for globbing semantics.
 
 For Linux, compile a statically linked MinSizeRel build:
 
-    cmake -G Ninja -DCMAKE_BUILD_TYPE=MinSizeRel -DLLVM_BUILD_STATIC=true ..
+    git clone --depth=1 https://github.com/llvm/llvm-project.git
+    cd llvm-project
+    mkdir build
+    cd build
+    cmake -G Ninja -DCMAKE_BUILD_TYPE=MinSizeRel -DLLVM_BUILD_STATIC=true -DLLVM_ENABLE_PROJECTS=clang ../llvm
     ninja clang-format
+    strip bin/clang-format
 
 For Mac OS X, static linking is not required.
 
