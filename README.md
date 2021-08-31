@@ -1,4 +1,4 @@
-[![Build Status](https://circleci.com/gh/angular/clang-format.svg?style=svg)](https://circleci.com/gh/angular/clang-format)
+[![Build Status](https://github.com/angular/clang-format/actions/workflows/node.js.yml/badge.svg)](https://github.com/angular/clang-format/actions/workflows/node.js.yml)
 
 # clang-format
 node.js module which wraps the native clang-format executable.
