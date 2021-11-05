@@ -8,7 +8,7 @@ set -e
 
 pushd ~/src/llvm-project/
 echo Updating clang
-git co master && git pull
+git co main && git pull
 popd
 
 mkdir -p ~/src/llvm-project/build.release
@@ -28,7 +28,7 @@ ssh $LINUX_HOST << EOF
   set -e
   pushd ~/src/llvm-project/
   echo Updating clang
-  git co master && git pull
+  git co main && git pull
   popd
 
   mkdir -p ~/src/llvm-project/build.release
