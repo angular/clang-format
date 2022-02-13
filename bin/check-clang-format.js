@@ -13,6 +13,17 @@
 const spawn = require('child_process').spawnSync;
 const path = require('path');
 
+function getPythonInterpreter() {
+  const interpreterOptions = ['python3', 'python', 'python2'];
+  for (const opt of interpreterOptions) {
+    const result = spawn(opt, ['--version'], {encoding: 'utf-8'});
+    if (result.status === 0) {
+      return opt;
+    }
+  }
+  return null;
+}
+
 function checkGitConfig() {
   const spawn_opts = {encoding: 'utf-8', stdio: ['pipe', 'pipe', 'inherit']};
   const binary = spawn('git', ['config', '--get', 'clangFormat.binary'], spawn_opts).stdout.trim();
@@ -46,6 +57,12 @@ function main(args) {
   let clangFormatPath;
   let configCheck;
 
+  const interpreter = getPythonInterpreter();
+  if (interpreter === null) {
+    console.error('No python interpreter found');
+    return 2;
+  }
+
   try {
     clangFormatPath = path.dirname(require.resolve('clang-format'));
     configCheck = checkGitConfig();
@@ -60,7 +77,7 @@ function main(args) {
   }
 
   const gitClangFormatPath = path.join(clangFormatPath, 'bin/git-clang-format');
-  const result = spawn('python', [gitClangFormatPath, '--diff'], {encoding: 'utf-8'});
+  const result = spawn(interpreter, [gitClangFormatPath, '--diff'], {encoding: 'utf-8'});
 
   if (result.error) {
     console.error('Error running git-clang-format:', result.error);
