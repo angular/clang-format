@@ -23,7 +23,7 @@
   ],
   "license": "Apache-2.0",
   "dependencies": {
-    "async": "^1.5.2",
+    "async": "^3.2.3",
     "glob": "^7.0.0",
     "resolve": "^1.1.6"
   }
