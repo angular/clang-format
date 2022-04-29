@@ -15,7 +15,13 @@ mkdir -p ~/src/llvm-project/build.release
 pushd ~/src/llvm-project/build.release
 
 echo === Building based on r$(git log -n 1 --pretty=format:"%h") ...
-cmake -G Ninja -DCMAKE_BUILD_TYPE=MinSizeRel -DLLVM_ENABLE_PROJECTS=clang ../llvm
+cmake -G Ninja \
+    -DCMAKE_BUILD_TYPE=MinSizeRel \
+    -DLLVM_ENABLE_PROJECTS=clang \
+    -DLLVM_TARGET_ARCH=x86_64 \
+    -DLLVM_DEFAULT_TARGET_TRIPLE=x86_64-apple-darwin \
+    -DCMAKE_OSX_ARCHITECTURES=x86_64 \
+    ../llvm
 ninja clang-format
 popd
 
