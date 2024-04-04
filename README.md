@@ -1,3 +1,9 @@
+> [!NOTE]
+> This repository is unmaintained.
+> I'd suggest either building yourself, using the official LLVM releases for your platform, or using something like prettier.
+>
+> See https://github.com/angular/clang-format/issues/82#issuecomment-1748482685
+
 [![Build Status](https://github.com/angular/clang-format/actions/workflows/node.js.yml/badge.svg)](https://github.com/angular/clang-format/actions/workflows/node.js.yml)
 
 # clang-format
